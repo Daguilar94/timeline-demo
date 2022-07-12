@@ -1,0 +1,23 @@
+.tooltip {
+  margin-top: -15px;
+  margin-left: -1.5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+
+  p {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px;
+    background: white;
+  }
+}
+
+.arrow {
+  position: absolute;
+  bottom: 10px;
+  z-index: 10;
+  fill: white;
+  transform: scale(3);
+}
