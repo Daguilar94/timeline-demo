@@ -1,0 +1,79 @@
+.vtbTimeline {
+  :global(.rct-sidebar-row) {
+    /* stylelint-disable-next-line declaration-no-important */
+    border: none !important;
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: white !important;
+  }
+
+  :global(.rct-calendar-header) {
+    border: none;
+  }
+
+  .zoom-button {
+    background-color: transparent;
+    border: 1px solid rgb(18, 130, 121);
+    color: rgb(18, 130, 121);
+    font-weight: bold;
+    font-size: 20px;
+    margin: 5px;
+    cursor: pointer;
+  }
+
+  .group,
+  .group-button {
+    background-color: white;
+    padding-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-weight: bold;
+    color: rgb(18, 130, 121);
+    font-size: 20px;
+    border: none;
+  }
+
+  .verticalTimeLines {
+    /* stylelint-disable-next-line declaration-no-important */
+    border-left: none !important;
+    /* stylelint-disable-next-line declaration-no-important */
+    background: transparent !important;
+  }
+
+  .horizontalGroupLines {
+    /* stylelint-disable-next-line declaration-no-important */
+    background: rgb(229, 230, 238) !important;
+
+    &:not(:last-child) {
+      /* stylelint-disable-next-line declaration-no-important */
+      border-bottom: 5px solid white !important;
+    }
+  }
+
+  .timelineHeader {
+    border: none;
+    background-color: white;
+    color: rgb(22, 22, 22);
+
+    .dateHeader {
+      background-color: white;
+      color: rgb(22, 22, 22);
+
+      :global(.rct-dateHeader-primary) {
+        color: rgb(22, 22, 22);
+        font-weight: bold;
+      }
+
+      :global(.rct-dateHeader) {
+        background-color: white;
+        color: rgb(22, 22, 22);
+        border: none;
+      }
+
+      &--secondary {
+        margin-bottom: 5px;
+        border-bottom: 3px solid rgb(22, 22, 22);
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+.timelines-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0 10px;
+}
+
+.timelines-wrapper .title {
+  width: 100%;
+  background-color: white;
+  text-align: center;
+}
+
+.timelines-wrapper .timeline-container {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.timelines-wrapper .timeline-container .timeline {
+  height: 100%;
+}
+
+.timelines-wrapper .timeline-container .timelines-wrapper .timeline-title {
+  position: sticky;
+  top: 0;
+  background-color: rgb(18, 130, 121);
+  z-index: 100;
+  color: white;
+}
