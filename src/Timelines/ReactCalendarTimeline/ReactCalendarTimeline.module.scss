@@ -1,3 +1,4 @@
+$deepTeal: rgb(229, 230, 238);
 .vtbTimeline {
   :global(.rct-sidebar-row) {
     /* stylelint-disable-next-line declaration-no-important */
@@ -9,16 +10,47 @@
   :global(.rct-calendar-header) {
     border: none;
   }
-
-  .zoom-button {
-    background-color: transparent;
-    border: 1px solid rgb(18, 130, 121);
-    color: rgb(18, 130, 121);
-    font-weight: bold;
-    font-size: 20px;
-    margin: 5px;
-    cursor: pointer;
+  :global(.react-datepicker-popper) {
+    z-index: 100;
   }
+
+  .timeline-actions {
+    border-bottom: 2px solid $deepTeal;
+    padding: 5px 5px 5px 200px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .zoom-button {
+      background-color: transparent;
+      border: 1px solid rgb(18, 130, 121);
+      color: rgb(18, 130, 121);
+      font-weight: bold;
+      font-size: 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .limit-date {
+      display: flex;
+      span {
+        white-space: nowrap;
+        margin-right: 5px;
+        font-weight: bold;
+      }
+    }
+
+    .hidden-rows {
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-right: 5px;
+        font-weight: bold;
+      }
+    }
+  }
+
 
   .group,
   .group-button {
@@ -42,7 +74,7 @@
 
   .horizontalGroupLines {
     /* stylelint-disable-next-line declaration-no-important */
-    background: rgb(229, 230, 238) !important;
+    background: $deepTeal !important;
 
     &:not(:last-child) {
       /* stylelint-disable-next-line declaration-no-important */

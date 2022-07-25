@@ -27,6 +27,7 @@ export default function BlockItem({
         className: classNames({
           [styles.blockItem]: !item.isPlainText,
           [styles.singleItem]: item.isPlainText,
+          [styles.singleDose]: item.singleDose
         }),
         onMouseDown: () => {
           // console.log('on item click', item)

@@ -1,5 +1,6 @@
 import ReactCalendarTimeline from "./Timelines/ReactCalendarTimeline/ReactCalendarTimeline";
 import styles from "./App.module.scss";
+import VisTimeline from "./Timelines/Vis/VisTimeline";
 
 function App() {
   return (
@@ -8,6 +9,9 @@ function App() {
         <section className={styles.timeline}>
           <ReactCalendarTimeline />
         </section>
+        {/* <section className={styles.timeline}>
+          <VisTimeline />
+        </section> */}
       </div>
     </div>
   );

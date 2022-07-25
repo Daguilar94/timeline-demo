@@ -5,12 +5,15 @@ import Timeline, {
   OnItemDragObjectMove,
   ReactCalendarGroupRendererProps,
   ReactCalendarItemRendererProps,
+  ReactCalendarTimelineProps,
   SidebarHeader,
   TimelineGroupBase,
   TimelineHeaders,
 } from "react-calendar-timeline";
 import classNames from "classnames";
 import moment from "moment";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import BlockItem from "../BlockItem/BlockItem";
 import generateFakeData, {
@@ -20,18 +23,18 @@ import generateFakeData, {
 
 import "react-calendar-timeline/lib/Timeline.css";
 import styles from "./ReactCalendarTimeline.module.scss";
+import ReactSelect, { ActionMeta, MultiValue } from "react-select";
 
-type TimelineStateType = {
-  defaultTimeEnd: Date;
-  defaultTimeStart: Date;
+type TimelineStateType = ReactCalendarTimelineProps<
+  CustomTimelineItemType,
+  CustomTimelineGroupType
+> & {
+  openGroups: { [K: number]: boolean };
   draggedItem?: {
     item?: CustomTimelineItemType;
     group: TimelineGroupBase;
     time: number;
   };
-  groups: CustomTimelineGroupType[];
-  items: CustomTimelineItemType[];
-  openGroups: { [K: number]: boolean };
 };
 
 const keys = {
@@ -58,14 +61,15 @@ export default function ReactCalendarTimeline() {
   const [state, setState] = useState<TimelineStateType>(() => {
     const { groups, items } = generateFakeData();
     return {
-      defaultTimeEnd: moment().endOf("Q").toDate(),
-      defaultTimeStart: moment().startOf("Q").toDate(),
+      visibleTimeEnd: moment().endOf("Q").valueOf(),
+      visibleTimeStart: moment().startOf("Q").valueOf(),
       draggedItem: undefined,
       groups,
       items,
       openGroups: {},
     };
   });
+  const [hiddenGroups, setHiddenGroups] = useState<string[]>([])
 
   const itemRenderer: (
     props: ReactCalendarItemRendererProps<CustomTimelineItemType>
@@ -110,8 +114,6 @@ export default function ReactCalendarTimeline() {
           : item
       ),
     }));
-
-    // console.log('Moved', itemId, dragTime, newGroupOrder)
   };
 
   const handleItemResize = (itemId: number, time: number, edge: string) => {
@@ -149,8 +151,6 @@ export default function ReactCalendarTimeline() {
     }));
   };
 
-  const { groups, items, defaultTimeStart, defaultTimeEnd } = state;
-
   const toggleGroup = (id: CustomTimelineGroupType["id"]) => {
     const { openGroups } = state;
     setState((prevState) => ({
@@ -162,7 +162,47 @@ export default function ReactCalendarTimeline() {
     }));
   };
 
+  const onLowerLimitChange = (date: Date) => {
+    setState((timelineState) => ({
+      ...timelineState,
+      visibleTimeStart: moment(date).valueOf(),
+    }));
+  };
+
+  const onUpperLimitChange = (date: Date) => {
+    setState((timelineState) => ({
+      ...timelineState,
+      visibleTimeEnd: moment(date).valueOf(),
+    }));
+  };
+
+  const onTimeChange = function (
+    visibleTimeStart: number,
+    visibleTimeEnd: number
+  ) {
+    setState((timelineState) => ({
+      ...timelineState,
+      visibleTimeStart,
+      visibleTimeEnd,
+    }));
+  };
+
+  const onHiddenGroupChange = (newValue: MultiValue<{
+    value: React.ReactNode;
+    label: React.ReactNode;
+}>, actionMeta: ActionMeta<{
+    value: React.ReactNode;
+    label: React.ReactNode;
+}>) => {
+    console.log({ newValue });
+    const newHiddenGroups = newValue.map(g => g.label) as string[]
+    setHiddenGroups(newHiddenGroups)
+  }
+
+  const { groups, items, visibleTimeEnd, visibleTimeStart } = state;
+
   const newGroups: CustomTimelineGroupType[] = groups
+    .filter((g) => !hiddenGroups.includes(g.title as string))
     .filter((g) => !g.parent || state.openGroups[g.parent])
     .map((group) => {
       if (group.root) {
@@ -191,7 +231,7 @@ export default function ReactCalendarTimeline() {
 
   return (
     <div className={styles.vtbTimeline}>
-      <div>
+      <section className={styles["timeline-actions"]}>
         <button
           type="button"
           onClick={() => zoom(0.75)}
@@ -206,12 +246,38 @@ export default function ReactCalendarTimeline() {
         >
           Zoom out
         </button>
-      </div>
+        <label htmlFor="startDate" className={styles["limit-date"]}>
+          <span>Start Date: </span>
+          <DatePicker
+            id="startDate"
+            selected={moment(visibleTimeStart).toDate()}
+            onChange={(date: Date) => onLowerLimitChange(date)}
+          />
+        </label>
+        <label htmlFor="endDate" className={styles["limit-date"]}>
+          <span>End Date: </span>
+          <DatePicker
+            id="endDate"
+            selected={moment(visibleTimeEnd).toDate()}
+            onChange={(date: Date) => onUpperLimitChange(date)}
+          />
+        </label>
+        <label htmlFor="displayedRows" className={styles["hidden-rows"]}>
+          <span>Hidden Rows: </span>
+          <ReactSelect
+            id="displayedRows"
+            options={groups.map((g) => ({ value: g.title, label: g.title }))}
+            isMulti
+            styles={{ menuList: (base) => ({ ...base, zIndex: 1000 }), menu: (base) => ({ ...base, zIndex: 1000}) }}
+            onChange={onHiddenGroupChange}
+          ></ReactSelect>
+        </label>
+      </section>
       <Timeline
         canMove={false}
         canResize={false}
-        defaultTimeEnd={defaultTimeEnd}
-        defaultTimeStart={defaultTimeStart}
+        visibleTimeEnd={visibleTimeEnd}
+        visibleTimeStart={visibleTimeStart}
         groupRenderer={groupRenderer}
         groups={newGroups}
         horizontalLineClassNamesForGroup={() => [styles.horizontalGroupLines]}
@@ -224,6 +290,7 @@ export default function ReactCalendarTimeline() {
         onItemDrag={handleItemDrag}
         onItemMove={handleItemMove}
         onItemResize={handleItemResize}
+        onTimeChange={onTimeChange}
         ref={timeline}
         sidebarWidth={200}
         stackItems

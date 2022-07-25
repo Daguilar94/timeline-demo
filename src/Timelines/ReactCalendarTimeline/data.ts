@@ -6,7 +6,8 @@ export type CustomTimelineItemType = TimelineItem<{
   color: string
   end: number
   start: number
-  isPlainText: boolean
+  isPlainText: boolean,
+  singleDose: boolean
 }>
 
 export type CustomTimelineGroupType = TimelineGroup<{
@@ -71,7 +72,6 @@ export default function generateData (
     } else {
       title = responses[Math.round(Math.random())]
     }
-    // console.log({title})
     const startDate = add(new Date(), {days: -intervalDays}).valueOf()
     const endDate = add(new Date(), {days: +intervalDays}).valueOf()
     const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000
@@ -80,13 +80,14 @@ export default function generateData (
     const end = moment(start)
       .add(Math.random() * 10 + 1, 'd')
       .valueOf()
+
     items.push({
-      canMove: true,
-      canResize: 'both',
+      // canMove: true,
+      // canResize: 'both',
+      singleDose: end - start <= (24 * 60 * 60 * 1000), // 1 day
       color: group === 2 ? 'white' : 'black',
       end: group === 2 ? moment(start).endOf('D').valueOf() : end,
       end_time: group === 2 ? moment(start).endOf('D').valueOf() : end,
-      // group: group,
       group: group === 2 ? [21, 22][Math.round(Math.random())] : group,
       id: `${i}`,
       isPlainText: group === 2,
